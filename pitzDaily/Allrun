@@ -1,0 +1,34 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # run from this directory
+
+#------------------------------- hemodynamic4Foam project -------------------------------#
+#Author
+    #Ehsan Golab, SUT. All rights reserved.
+    #Ehsan1996Golab@gmail.com
+
+#--------------------------------------------------------------------------------------#
+
+# cleancase is function that removes the files and directories.
+cleancase () {
+rm -r constant/polyMesh
+}
+
+# (getApplication) is an command to find the solver name from the controlDict file. Also, ($) use for the variable.
+application=$(getApplication)
+
+#to remove the files and directories befor rendering.
+cleancase
+
+
+echo run blockMesh ...
+fluent3DMeshToFoam constant/barrel.msh
+snappyHexMesh -overwrite
+transformPoints -scale '(0.001 0.001 0.001)'
+
+
+echo run solver ...
+#$application
+simpleFoam
+
+
+
